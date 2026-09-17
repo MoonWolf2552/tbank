@@ -1,5 +1,6 @@
 package academy.backend.market_pulse.model;
 
+
 public class Etf extends Instrument {
 
     private final String trackingIndex;
@@ -16,5 +17,10 @@ public class Etf extends Instrument {
     @Override
     public String getDescription() {
         return "ETF, отслеживает индекс: " + trackingIndex;
+    }
+
+    @Override
+    public String getType() {
+        return "ETF";
     }
 }

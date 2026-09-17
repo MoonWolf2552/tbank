@@ -2,6 +2,7 @@ package academy.backend.market_pulse.model;
 
 import java.math.BigDecimal;
 
+
 public class Bond extends Instrument {
 
     private final BigDecimal couponRate;
@@ -25,5 +26,10 @@ public class Bond extends Instrument {
     @Override
     public String getDescription() {
         return "Облигация, купон: " + couponRate + "%, погашение: " + maturityYear;
+    }
+
+    @Override
+    public String getType() {
+        return "BOND";
     }
 }
