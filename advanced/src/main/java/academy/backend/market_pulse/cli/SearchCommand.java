@@ -21,12 +21,14 @@ public class SearchCommand implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        Instrument instrument = repository.findByTicker(ticker);
-        if (instrument == null) {
-            System.out.println("Инструмент не найден: " + ticker);
-            return 1;
-        }
-        System.out.println(instrument.getDescription());
-        return 0;
+        return repository.findByTicker(ticker)
+                .map(instrument -> {
+                    System.out.println("Инструмент найден: " + instrument);
+                    return 1;
+                })
+                .orElseGet(() -> {
+                    System.out.println("Инструмент не найден: " + ticker);
+                    return 0;
+                });
     }
 }

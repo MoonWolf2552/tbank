@@ -1,11 +1,10 @@
 package academy.backend.market_pulse.factory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ServiceLoader;
-
 import academy.backend.market_pulse.model.Currency;
 import academy.backend.market_pulse.model.Instrument;
+import academy.backend.market_pulse.util.Registry;
+
+import java.util.ServiceLoader;
 
 /**
  * Реестр фабрик инструментов. Реализации {@link InstrumentFactory} не регистрируют себя вручную —
@@ -16,23 +15,21 @@ import academy.backend.market_pulse.model.Instrument;
  */
 public final class InstrumentFactories {
 
-    private static final Map<String, InstrumentFactory> REGISTRY = load();
+    private static final Registry<String, InstrumentFactory> REGISTRY = loadRegistry();
 
     private InstrumentFactories() {
     }
 
     public static Instrument create(String type, String ticker, String name, Currency currency) {
-        InstrumentFactory factory = REGISTRY.get(type.toUpperCase());
-        if (factory == null) {
-            throw new IllegalArgumentException("Unknown instrument type: " + type);
-        }
-        return factory.create(ticker, name, currency);
+        return REGISTRY.find(type.toUpperCase())
+                .map(factory -> factory.create(ticker, name, currency))
+                .orElseThrow(() -> new IllegalArgumentException("Unknown instrument type: " + type));
     }
 
-    private static Map<String, InstrumentFactory> load() {
-        Map<String, InstrumentFactory> registry = new HashMap<>();
+    private static Registry<String, InstrumentFactory> loadRegistry() {
+        Registry<String, InstrumentFactory> registry = new Registry<>();
         for (InstrumentFactory factory : ServiceLoader.load(InstrumentFactory.class)) {
-            registry.put(factory.type().toUpperCase(), factory);
+            registry.register(factory.type().toUpperCase(), factory);
         }
         return registry;
     }

@@ -3,6 +3,7 @@ package academy.backend.market_pulse.demo;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Iterator;
+import java.util.Optional;
 
 import academy.backend.market_pulse.model.Instrument;
 import academy.backend.market_pulse.repository.InMemoryInstrumentRepository;
@@ -76,9 +77,9 @@ public final class ProxyFactory {
         }
 
         @Override
-        public Instrument findByTicker(String ticker) {
+        public Optional<Instrument> findByTicker(String ticker) {
             long start = System.nanoTime();
-            Instrument result = target.findByTicker(ticker);
+            Optional<Instrument> result = target.findByTicker(ticker);
             System.out.printf("findByTicker() выполнен за %d нс%n", System.nanoTime() - start);
             return result;
         }

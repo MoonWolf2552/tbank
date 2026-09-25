@@ -1,9 +1,11 @@
 package academy.backend.market_pulse.repository;
 
+import academy.backend.market_pulse.model.*;
+
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import academy.backend.market_pulse.model.Instrument;
+import java.util.Optional;
 
 /**
  * Реализация {@link InstrumentRepository} поверх внутреннего массива фиксированного размера.
@@ -20,13 +22,13 @@ public class InMemoryInstrumentRepository implements InstrumentRepository {
     }
 
     @Override
-    public Instrument findByTicker(String ticker) {
+    public Optional<Instrument> findByTicker(String ticker) {
         for (Instrument instrument : this) {
             if (instrument.getTicker().equalsIgnoreCase(ticker)) {
-                return instrument;
+                return Optional.of(instrument);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override

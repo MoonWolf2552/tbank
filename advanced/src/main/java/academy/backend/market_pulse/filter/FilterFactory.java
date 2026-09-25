@@ -1,8 +1,9 @@
 package academy.backend.market_pulse.filter;
 
-import java.math.BigDecimal;
-
 import academy.backend.market_pulse.model.Currency;
+import academy.backend.market_pulse.model.Stock;
+
+import java.math.BigDecimal;
 
 /**
  * Выбор конкретного {@link InstrumentFilter} по критериям, переданным из CLI. Критерии
@@ -16,7 +17,7 @@ public final class FilterFactory {
     }
 
     public static InstrumentFilter create(String type, String ticker, Currency currency,
-                                           PriceFilter.Operator priceOperator, BigDecimal price) {
+                                          PriceFilter.Operator priceOperator, BigDecimal price) {
         int criteriaCount = count(type != null, ticker != null, currency != null, priceOperator != null);
         if (criteriaCount > 1) {
             throw new IllegalArgumentException(
@@ -24,18 +25,28 @@ public final class FilterFactory {
                             + "--price-op/--price");
         }
         if (type != null) {
-            return new TypeFilter(type);
+            return i -> i.getType().equalsIgnoreCase(type);
         }
         if (ticker != null) {
-            return new TickerFilter(ticker);
+            return i -> i.getTicker().toUpperCase().contains(ticker.toUpperCase());
         }
         if (currency != null) {
-            return new CurrencyFilter(currency);
+            return i -> i.getCurrency() == currency;
         }
         if (priceOperator != null) {
-            return new PriceFilter(priceOperator, price);
+            return i -> {
+                if (!(i instanceof Stock stock)) {
+                    return false;
+                }
+                int comparison = stock.getDividendYield().compareTo(price);
+                return switch (priceOperator) {
+                    case GE -> comparison >= 0;
+                    case LE -> comparison <= 0;
+                    case EQ -> comparison == 0;
+                };
+            };
         }
-        return new NoOpFilter();
+        return _ -> true;
     }
 
     private static int count(boolean... flags) {

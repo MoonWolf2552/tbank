@@ -2,6 +2,7 @@ package academy.backend.market_pulse.filter;
 
 import academy.backend.market_pulse.model.Instrument;
 
+@Deprecated
 public class TickerFilter implements InstrumentFilter {
 
     private final String query;
