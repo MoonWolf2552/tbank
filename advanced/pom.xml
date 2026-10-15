@@ -43,17 +43,35 @@
             <artifactId>cglib</artifactId>
             <version>3.3.0</version>
         </dependency>
-        <!-- Функциональные типы: Try, Either (семинар 3, этап 8 — Vavr) -->
+        <!-- Функциональные типы: Try, Either (семинар 3, этап 8 — Vavr + семинар 5, этап 7) -->
         <dependency>
             <groupId>io.vavr</groupId>
             <artifactId>vavr</artifactId>
             <version>1.0.1</version>
         </dependency>
-        <!-- Микробенчмарки: стоимость исключений (семинар 4, этап 5) -->
+        <!-- Микробенчмарки: стоимость исключений (семинар 4, этап 5 + семинар 5, этап 6) -->
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-core</artifactId>
             <version>1.37</version>
+        </dependency>
+        <!-- Иммутабельные коллекции и Multimap (семинар 5, этап 7) -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>33.4.0-jre</version>
+        </dependency>
+        <!-- Мультимножества и теоретико-множественные операции над коллекциями (семинар 5, этап 7) -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version>
+        </dependency>
+        <!-- Примитивные коллекции без boxing (семинар 5, этап 7) -->
+        <dependency>
+            <groupId>it.unimi.dsi</groupId>
+            <artifactId>fastutil</artifactId>
+            <version>8.5.15</version>
         </dependency>
     </dependencies>
 

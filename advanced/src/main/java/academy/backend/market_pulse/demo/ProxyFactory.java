@@ -3,7 +3,11 @@ package academy.backend.market_pulse.demo;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
 
 import academy.backend.market_pulse.model.Instrument;
 import academy.backend.market_pulse.repository.InMemoryInstrumentRepository;
@@ -46,6 +50,53 @@ public final class ProxyFactory {
                 });
     }
 
+    /**
+     * JDK Dynamic Proxy, кеширующий {@code findByTicker} в {@link LruCache} — {@link LinkedHashMap}
+     * в режиме {@code accessOrder=true} (порядок по последнему обращению, не по вставке) с
+     * переопределённым {@code removeEldestEntry}, вытесняющим самый давно не запрашиваемый тикер
+     * при превышении {@code cacheSize}. {@code add} грубо инвалидирует весь кеш целиком — искать
+     * точечно, что именно устарело, сегодня не задача.
+     */
+    public static InstrumentRepository cachingRepository(InstrumentRepository target, int cacheSize) {
+        Map<String, Optional<Instrument>> cache = new LruCache<>(cacheSize);
+        return (InstrumentRepository) Proxy.newProxyInstance(
+                InstrumentRepository.class.getClassLoader(),
+                new Class<?>[]{InstrumentRepository.class},
+                (Object proxy, Method method, Object[] args) -> {
+                    if ("findByTicker".equals(method.getName())) {
+                        String ticker = ((String) args[0]).toUpperCase();
+                        if (cache.containsKey(ticker)) {
+                            System.out.println("Cache hit: " + ticker);
+                            return cache.get(ticker);
+                        }
+                        System.out.println("Cache miss: " + ticker);
+                        Optional<Instrument> result = target.findByTicker(ticker);
+                        cache.put(ticker, result);
+                        return result;
+                    }
+                    if ("add".equals(method.getName())) {
+                        cache.clear();
+                    }
+                    return method.invoke(target, args);
+                });
+    }
+
+    /** {@code accessOrder=true} + {@code removeEldestEntry} — весь механизм LRU в двух строчках. */
+    private static final class LruCache<K, V> extends LinkedHashMap<K, V> {
+
+        private final int maxSize;
+
+        private LruCache(int maxSize) {
+            super(maxSize, 0.75f, true);
+            this.maxSize = maxSize;
+        }
+
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+            return size() > maxSize;
+        }
+    }
+
     private static InstrumentRepository cglibProxy() {
         // CGLIB проксирует класс, а не готовый экземпляр: сгенерированный подкласс сам и есть
         // хранилище, поэтому в отличие от двух других вариантов здесь нет отдельного target.
@@ -81,6 +132,22 @@ public final class ProxyFactory {
             long start = System.nanoTime();
             Optional<Instrument> result = target.findByTicker(ticker);
             System.out.printf("findByTicker() выполнен за %d нс%n", System.nanoTime() - start);
+            return result;
+        }
+
+        @Override
+        public boolean remove(String ticker) {
+            long start = System.nanoTime();
+            boolean result = target.remove(ticker);
+            System.out.printf("remove() выполнен за %d нс%n", System.nanoTime() - start);
+            return result;
+        }
+
+        @Override
+        public Set<String> removeIf(Predicate<Instrument> filter) {
+            long start = System.nanoTime();
+            Set<String> result = target.removeIf(filter);
+            System.out.printf("removeIf() выполнен за %d нс%n", System.nanoTime() - start);
             return result;
         }
 
