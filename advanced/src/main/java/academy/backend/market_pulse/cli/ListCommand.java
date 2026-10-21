@@ -1,16 +1,16 @@
 package academy.backend.market_pulse.cli;
 
-import java.math.BigDecimal;
-import java.util.concurrent.Callable;
-
 import academy.backend.market_pulse.filter.FilterFactory;
 import academy.backend.market_pulse.filter.InstrumentFilter;
 import academy.backend.market_pulse.filter.PriceFilter;
 import academy.backend.market_pulse.model.Currency;
-import academy.backend.market_pulse.model.Instrument;
 import academy.backend.market_pulse.repository.InstrumentRepository;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+
+import java.math.BigDecimal;
+import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
 @Command(name = "list", description = "Список инструментов")
 public class ListCommand implements Callable<Integer> {
@@ -40,11 +40,13 @@ public class ListCommand implements Callable<Integer> {
     public Integer call() {
         InstrumentFilter filter = FilterFactory.create(type, ticker, currency, priceOperator, price);
 
-        for (Instrument instrument : repository) {
-            if (filter.matches(instrument)) {
-                System.out.println(instrument.getDescription());
-            }
-        }
+        // Рефакторинг (семинар 6, см. «План семинара.md», «Что уже реализовано»): императивный цикл отбора заменён на декларативный
+        // стрим. InstrumentFilter используется как Predicate через ссылку на метод; поведение
+        // (тот же отбор и вывод) не меняется.
+        repository.stream()
+                .filter(filter::matches)
+                .forEach(System.out::println);
+
         return 0;
     }
 }

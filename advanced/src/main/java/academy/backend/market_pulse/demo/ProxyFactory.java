@@ -1,5 +1,11 @@
 package academy.backend.market_pulse.demo;
 
+import academy.backend.market_pulse.model.Instrument;
+import academy.backend.market_pulse.repository.InMemoryInstrumentRepository;
+import academy.backend.market_pulse.repository.InstrumentRepository;
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.MethodInterceptor;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Iterator;
@@ -8,12 +14,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
-import academy.backend.market_pulse.model.Instrument;
-import academy.backend.market_pulse.repository.InMemoryInstrumentRepository;
-import academy.backend.market_pulse.repository.InstrumentRepository;
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
 
 /**
  * Скрывает от клиента, как именно устроена прокси-обёртка над {@link InstrumentRepository},
@@ -137,18 +139,12 @@ public final class ProxyFactory {
 
         @Override
         public boolean remove(String ticker) {
-            long start = System.nanoTime();
-            boolean result = target.remove(ticker);
-            System.out.printf("remove() выполнен за %d нс%n", System.nanoTime() - start);
-            return result;
+            return target.remove(ticker);
         }
 
         @Override
         public Set<String> removeIf(Predicate<Instrument> filter) {
-            long start = System.nanoTime();
-            Set<String> result = target.removeIf(filter);
-            System.out.printf("removeIf() выполнен за %d нс%n", System.nanoTime() - start);
-            return result;
+            return target.removeIf(filter);
         }
 
         @Override
@@ -156,6 +152,14 @@ public final class ProxyFactory {
             long start = System.nanoTime();
             Iterator<Instrument> result = target.iterator();
             System.out.printf("iterator() выполнен за %d нс%n", System.nanoTime() - start);
+            return result;
+        }
+
+        @Override
+        public Stream<Instrument> stream() {
+            long start = System.nanoTime();
+            Stream<Instrument> result = target.stream();
+            System.out.printf("stream() выполнен за %d нс%n", System.nanoTime() - start);
             return result;
         }
     }

@@ -1,9 +1,14 @@
 package academy.backend.market_pulse.repository;
 
 import academy.backend.market_pulse.exception.DuplicateTickerException;
-import academy.backend.market_pulse.model.*;
+import academy.backend.market_pulse.model.Bond;
+import academy.backend.market_pulse.model.Currency;
+import academy.backend.market_pulse.model.Etf;
+import academy.backend.market_pulse.model.Instrument;
+import academy.backend.market_pulse.model.Stock;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -11,6 +16,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
+
 
 /**
  * Реализация {@link InstrumentRepository} поверх {@link LinkedHashMap} (см. «План семинара.md»,
@@ -20,7 +27,7 @@ import java.util.function.Predicate;
  */
 public class InMemoryInstrumentRepository implements InstrumentRepository {
 
-    private final Map<String, Instrument> instruments = new LinkedHashMap<>();
+    private final Map<String, Instrument> instruments = new HashMap<>();
 
     public InMemoryInstrumentRepository() {
         // Стартовые данные для демонстрации CLI: без них каждый запуск начинается с пустого списка.
@@ -67,4 +74,10 @@ public class InMemoryInstrumentRepository implements InstrumentRepository {
     public Iterator<Instrument> iterator() {
         return instruments.values().iterator();
     }
+
+    @Override
+    public Stream<Instrument> stream() {
+        return instruments.values().stream();
+    }
+
 }

@@ -5,6 +5,7 @@ import academy.backend.market_pulse.model.Instrument;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * Хранилище инструментов. Выделено в интерфейс (в отличие от базового трека) — нужен для
@@ -35,4 +36,11 @@ public interface InstrumentRepository extends Iterable<Instrument> {
      * «План семинара.md», семинар 5, этап 5).
      */
     Set<String> removeIf(Predicate<Instrument> filter);
+
+    /**
+     * Потоковый доступ к инструментам — вход в Stream API для декларативной фильтрации, сортировки
+     * и агрегации (см. «План семинара.md», семинар 6, раздел «Что уже реализовано»).
+     */
+    Stream<Instrument> stream();
+
 }
