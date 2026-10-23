@@ -1,6 +1,8 @@
 package academy.backend.market_pulse.model;
 
+import lombok.Getter;
 
+@Getter
 public class Etf extends Instrument {
 
     private final String trackingIndex;
@@ -8,10 +10,6 @@ public class Etf extends Instrument {
     public Etf(String ticker, String name, Currency currency, String trackingIndex) {
         super(ticker, name, currency);
         this.trackingIndex = trackingIndex;
-    }
-
-    public String getTrackingIndex() {
-        return trackingIndex;
     }
 
     @Override

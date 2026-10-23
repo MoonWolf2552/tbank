@@ -8,6 +8,7 @@ import picocli.CommandLine.Command;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+
 /**
  * Сводка по котировкам: печатает результат каждой зарегистрированной {@link Stat} (семинар 6,
  * этап «Статистика как расширяемость»). Сама команда не знает, сколько статистик и какие именно —

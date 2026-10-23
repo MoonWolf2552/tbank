@@ -1,4 +1,6 @@
-package academy.backend.market_pulse.factory;
+package academy.backend.market_pulse.factory.impl;
+
+import academy.backend.market_pulse.factory.InstrumentFactory;
 
 import java.math.BigDecimal;
 

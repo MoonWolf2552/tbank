@@ -5,6 +5,7 @@ import academy.backend.market_pulse.filter.InstrumentFilter;
 import academy.backend.market_pulse.filter.PriceFilter;
 import academy.backend.market_pulse.model.Currency;
 import academy.backend.market_pulse.repository.InstrumentRepository;
+import lombok.RequiredArgsConstructor;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
@@ -13,6 +14,7 @@ import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 @Command(name = "list", description = "Список инструментов")
+@RequiredArgsConstructor
 public class ListCommand implements Callable<Integer> {
 
     @Option(names = "--type", description = "Фильтр по типу инструмента")
@@ -31,10 +33,6 @@ public class ListCommand implements Callable<Integer> {
     private BigDecimal price;
 
     private final InstrumentRepository repository;
-
-    public ListCommand(InstrumentRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public Integer call() {

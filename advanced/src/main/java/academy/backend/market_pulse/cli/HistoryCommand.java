@@ -1,6 +1,7 @@
 package academy.backend.market_pulse.cli;
 
 import academy.backend.market_pulse.gather.MovingAverageGatherer;
+import lombok.RequiredArgsConstructor;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
@@ -15,6 +16,7 @@ import java.util.concurrent.Callable;
  * семинар 6, см. «План семинара.md», «Что уже реализовано»). История цен — заглушка-{@code Map} в {@code Main}, а не реальный источник.
  */
 @Command(name = "history", description = "Скользящее среднее по истории цен инструмента")
+@RequiredArgsConstructor
 public class HistoryCommand implements Callable<Integer> {
 
     @Parameters(index = "0", description = "Тикер инструмента")
@@ -24,10 +26,6 @@ public class HistoryCommand implements Callable<Integer> {
     private int window = 3;
 
     private final Map<String, List<BigDecimal>> priceHistory;
-
-    public HistoryCommand(Map<String, List<BigDecimal>> priceHistory) {
-        this.priceHistory = priceHistory;
-    }
 
     @Override
     public Integer call() {

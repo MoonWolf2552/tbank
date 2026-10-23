@@ -7,10 +7,12 @@ import academy.backend.market_pulse.factory.InstrumentFactories;
 import academy.backend.market_pulse.model.Currency;
 import academy.backend.market_pulse.model.Instrument;
 import academy.backend.market_pulse.repository.InstrumentRepository;
+import lombok.RequiredArgsConstructor;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
 @Command(name = "add", description = "Добавление инструмента в репозиторий")
+@RequiredArgsConstructor
 public class AddCommand implements Callable<Integer> {
 
     @Parameters(index = "0", description = "Тип инструмента (STOCK, BOND, ETF)")
@@ -26,10 +28,6 @@ public class AddCommand implements Callable<Integer> {
     private Currency currency;
 
     private final InstrumentRepository repository;
-
-    public AddCommand(InstrumentRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public Integer call() {

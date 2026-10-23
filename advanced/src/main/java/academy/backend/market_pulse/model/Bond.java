@@ -2,7 +2,9 @@ package academy.backend.market_pulse.model;
 
 import java.math.BigDecimal;
 
+import lombok.Getter;
 
+@Getter
 public class Bond extends Instrument {
 
     private final BigDecimal couponRate;
@@ -13,14 +15,6 @@ public class Bond extends Instrument {
         super(ticker, name, currency);
         this.couponRate = couponRate;
         this.maturityYear = maturityYear;
-    }
-
-    public BigDecimal getCouponRate() {
-        return couponRate;
-    }
-
-    public int getMaturityYear() {
-        return maturityYear;
     }
 
     @Override

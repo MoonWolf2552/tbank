@@ -2,6 +2,7 @@ package academy.backend.market_pulse.cli;
 
 import academy.backend.market_pulse.model.Quote;
 import academy.backend.market_pulse.service.QuoteSource;
+import lombok.RequiredArgsConstructor;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
@@ -13,6 +14,7 @@ import java.util.concurrent.Callable;
  * по {@code changePercent} в нужную сторону + limit).
  */
 @Command(name = "movers", description = "Топ инструментов по изменению цены (по умолчанию — растущие)")
+@RequiredArgsConstructor
 public class MoversCommand implements Callable<Integer> {
 
     @Option(names = "--top", description = "Сколько инструментов показать (по умолчанию 5)")
@@ -22,10 +24,6 @@ public class MoversCommand implements Callable<Integer> {
     private boolean losers;
 
     private final QuoteSource source;
-
-    public MoversCommand(QuoteSource source) {
-        this.source = source;
-    }
 
     @Override
     public Integer call() {

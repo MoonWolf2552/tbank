@@ -2,6 +2,7 @@ package academy.backend.market_pulse.cli;
 
 import academy.backend.market_pulse.model.Quote;
 import academy.backend.market_pulse.service.QuoteService;
+import lombok.RequiredArgsConstructor;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
@@ -17,16 +18,13 @@ import java.util.concurrent.Callable;
  * допустимо, так как стрим последовательный.
  */
 @Command(name = "compare", description = "Сравнить доходность инструментов по тикерам (по убыванию изменения цены)")
+@RequiredArgsConstructor
 public class CompareCommand implements Callable<Integer> {
 
     @Parameters(arity = "1..*", description = "Тикеры инструментов")
     private List<String> tickers;
 
     private final QuoteService quoteService;
-
-    public CompareCommand(QuoteService quoteService) {
-        this.quoteService = quoteService;
-    }
 
     @Override
     public Integer call() {
